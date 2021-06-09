@@ -1,1 +1,2 @@
-INSERT INTO USER(username, password) VALUES('teste', '$2a$10$ITuk5qeqfX6Zcjku53jAquG594RV.hmcKO8eW0PRTlwHlEBcs4ZYW');
+INSERT INTO USER(username, password) VALUES('teste', '$2a$10$Ijf4rM7Mor2U5zN9Zjz5qOofRq0Qy.MtWdRqtUp99TXTFYEnytOpO');
+INSERT INTO PROFILE(name) VALUES ('admin');
