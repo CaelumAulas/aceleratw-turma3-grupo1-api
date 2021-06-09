@@ -30,24 +30,29 @@ public class AuthControllerTests {
 		uri = new URI("/auth");
 	}
 	
+	private void postMock(String body, int statusCode) throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post(uri)
+				.content(body)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().is(statusCode));
+	}
+	
+	private String getBody(String username, String password) {
+		return String.format("{ \"username\":\"%s\", \"password\":\"%s\"}", username, password);
+	}
+	
 	@Test
 	public void shouldAuthenticateUser() throws Exception {	
-		String body = "{ \"username\":\"teste\", \"password\":\"123\"}";
+		String body = getBody("teste", "123");
 		
-		mockMvc.perform(MockMvcRequestBuilders.post(uri)
-					.content(body)
-					.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(MockMvcResultMatchers.status().is(200));
+		postMock(body, 200);
 	}
 	
 	@Test
 	public void shouldNotAuthenticateUser() throws Exception {
-		String body = "{ \"username\":\"teste\", \"password\":\"1234\"}";
+		String body = getBody("teste", "1234");
 		
-		mockMvc.perform(MockMvcRequestBuilders.post(uri)
-					.content(body)
-					.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(MockMvcResultMatchers.status().is(400));
+		postMock(body, 400);
 	} 
 
 }
