@@ -13,6 +13,12 @@ public class Brand {
 	private Long id;
 	
 	private String name;
+	
+	public Brand() { }
+	
+	public Brand(String name) {
+		this.name = name;
+	}
 
 	public Long getId() {
 		return id;

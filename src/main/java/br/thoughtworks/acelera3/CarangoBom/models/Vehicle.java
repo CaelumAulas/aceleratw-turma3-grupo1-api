@@ -19,6 +19,15 @@ public class Vehicle {
 	private int year;
 	private double price;
 	
+	public Vehicle() { }
+	
+	public Vehicle(Brand brand, String model, int year, double price) {
+		this.brand = brand;
+		this.model = model;
+		this.year = year;
+		this.price = price;
+	}
+	
 	public Long getId() {
 		return id;
 	}

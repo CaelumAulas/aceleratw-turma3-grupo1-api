@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.thoughtworks.acelera3.CarangoBom.models.Brand;
@@ -48,17 +51,17 @@ public class VehicleRepositoryTests {
 	
 	@Test
 	public void shouldFindVehiclesByBrand() {
-		Brand brand = new Brand();
+		Brand brand = new Brand("Ford");
 		brand.setId(1l);
-		brand.setName("Ford");
 		List<Vehicle> ford_vehicles = vehicleRepository.findAllByBrand(brand);
 		Assert.assertEquals(3, ford_vehicles.size());
 	}
 	
 	@Test
 	public void shouldFindVehiclesByBrandName() {
-		List<Vehicle> vehicles = vehicleRepository.findAllByBrandName("Fiat");
-		Assert.assertEquals(1, vehicles.size());
+		Pageable pagination = PageRequest.of(0, 10);
+		Page<Vehicle> vehicles = vehicleRepository.findAllByBrandName("Fiat", pagination);
+		Assert.assertEquals(1, vehicles.getTotalElements());
 	}
 	
 	@Test
