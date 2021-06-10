@@ -25,6 +25,7 @@ public class VehicleListDto {
 		totalPages = input.getTotalPages();
 		hasNext = input.hasNext();
 		hasPrevious = input.hasPrevious();
+	
 	}
 	
 	public List<VehicleDto> getContent() {
@@ -39,10 +40,10 @@ public class VehicleListDto {
 	public int getTotalPages() {
 		return totalPages;
 	}
-	public boolean hasNext() {
+	public boolean getHasNext() {
 		return hasNext;
 	}
-	public boolean hasPrevious() {
+	public boolean getHasPrevious() {
 		return hasPrevious;
 	}
 }

@@ -63,8 +63,8 @@ public class VehicleControllerTests {
 		Assert.assertEquals(0, vehicles.getPage());
 		Assert.assertEquals(1, vehicles.getTotalPages());
 		Assert.assertEquals(20, vehicles.getPageSize());
-		Assert.assertFalse(vehicles.hasNext());
-		Assert.assertFalse(vehicles.hasPrevious());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
 	}
 	
 	@Test
@@ -74,8 +74,84 @@ public class VehicleControllerTests {
 		Assert.assertEquals(0, vehicles.getPage());
 		Assert.assertEquals(1, vehicles.getTotalPages());
 		Assert.assertEquals(10, vehicles.getPageSize());
-		Assert.assertFalse(vehicles.hasNext());
-		Assert.assertFalse(vehicles.hasPrevious());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
+	}
+	
+	@Test
+	public void shouldReturnVehiclesByModel() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?model=Uno&page=0&size=10"), VehicleListDto.class);
+		Assert.assertEquals(1, vehicles.getContent().size());
+		Assert.assertEquals(0, vehicles.getPage());
+		Assert.assertEquals(1, vehicles.getTotalPages());
+		Assert.assertEquals(10, vehicles.getPageSize());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
+	}
+	
+	@Test
+	public void shouldReturnVehiclesByYearRange() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?minYear=2019&maxYear=2020&page=0&size=10"), VehicleListDto.class);
+		Assert.assertEquals(1, vehicles.getContent().size());
+		Assert.assertEquals(0, vehicles.getPage());
+		Assert.assertEquals(1, vehicles.getTotalPages());
+		Assert.assertEquals(10, vehicles.getPageSize());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
+	}
+	
+	@Test
+	public void shouldReturnVehiclesByPriceRange() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?minPrice=20000.99&maxPrice=31000.99&page=0&size=10"), VehicleListDto.class);
+		Assert.assertEquals(2, vehicles.getContent().size());
+		Assert.assertEquals(0, vehicles.getPage());
+		Assert.assertEquals(1, vehicles.getTotalPages());
+		Assert.assertEquals(10, vehicles.getPageSize());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
 	}
 
+	@Test
+	public void shouldReturnAllVehiclesWithPaginationAndIsFirstPage() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?page=0&size=2"), VehicleListDto.class);
+		Assert.assertEquals(2, vehicles.getContent().size());
+		Assert.assertEquals(0, vehicles.getPage());
+		Assert.assertEquals(2, vehicles.getTotalPages());
+		Assert.assertEquals(2, vehicles.getPageSize());
+		Assert.assertTrue(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
+	}
+	
+	@Test
+	public void shouldReturnAllVehiclesWithPaginationAndIsSecondPage() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?page=1&size=2"), VehicleListDto.class);
+		Assert.assertEquals(2, vehicles.getContent().size());
+		Assert.assertEquals(1, vehicles.getPage());
+		Assert.assertEquals(2, vehicles.getTotalPages());
+		Assert.assertEquals(2, vehicles.getPageSize());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertTrue(vehicles.getHasPrevious());
+	}
+	
+	@Test
+	public void shouldReturnVehiclesByModelAndBrand() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?model=Fusion&brand=Ford&page=0&size=10"), VehicleListDto.class);
+		Assert.assertEquals(1, vehicles.getContent().size());
+		Assert.assertEquals(0, vehicles.getPage());
+		Assert.assertEquals(1, vehicles.getTotalPages());
+		Assert.assertEquals(10, vehicles.getPageSize());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
+	}
+	
+	@Test
+	public void shouldNotReturnVehiclesByWrongModelAndBrand() throws Exception {
+		VehicleListDto vehicles = mapFromJson(getMock("?model=Fusion&brand=Fiat&page=0&size=10"), VehicleListDto.class);
+		Assert.assertEquals(0, vehicles.getContent().size());
+		Assert.assertEquals(0, vehicles.getPage());
+		Assert.assertEquals(0, vehicles.getTotalPages());
+		Assert.assertEquals(10, vehicles.getPageSize());
+		Assert.assertFalse(vehicles.getHasNext());
+		Assert.assertFalse(vehicles.getHasPrevious());
+	}
 }
