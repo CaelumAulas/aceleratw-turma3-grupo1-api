@@ -41,10 +41,54 @@ public class VehicleController {
 	
 	@GetMapping
 	public ResponseEntity<VehicleListDto> getByParameters(@PageableDefault(sort="id", direction=Direction.ASC) Pageable pagination,
-														  @RequestParam(required = false) String brand)
+														  @RequestParam(required = false) String brand,
+														  @RequestParam(required = false) String model,
+														  @RequestParam(required = false) String minYear,
+														  @RequestParam(required = false) String maxYear,
+														  @RequestParam(required = false) String minPrice,
+														  @RequestParam(required = false) String maxPrice)
 	{
-		Page<Vehicle> vehicles = vehicleRepository.findAllByBrandName(brand, pagination);
+
+		double minPriceValue=0;
+		double maxPriceValue=Double.MAX_VALUE;
+		int minYearValue=1900;
+		int maxYearValue=Integer.MAX_VALUE;
+
+		if (brand == null) {
+			brand="";
+		}
+
+		if (model == null) {
+			model="";
+		}
+
+		if (minYear != null) {
+			minYearValue = Integer.parseInt(minYear);
+		}
+		if (maxYear != null) {
+			maxYearValue = Integer.parseInt(maxYear);
+		}
+		
+		if (minPrice != null) {
+			minPriceValue = Double.parseDouble(minPrice);
+		}
+		if (maxPrice != null) {
+			maxPriceValue = Double.parseDouble(maxPrice);
+		}
+		
+		Page<Vehicle> vehicles = vehicleRepository
+			.findAllByBrandNameContainsAndModelContainsAndYearBetweenAndPriceBetween(brand, 
+																					  model, 
+																					  minYearValue,
+																					  maxYearValue,
+																					  minPriceValue,
+																					  maxPriceValue,
+																					  pagination);
+
+
 		return ResponseEntity.ok(new VehicleListDto(vehicles));
+		
+		
 	}
 	
 }
