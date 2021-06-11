@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.thoughtworks.acelera3.CarangoBom.dto.TokenDto;
 import br.thoughtworks.acelera3.CarangoBom.dto.VehicleListDto;
 import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 
@@ -48,21 +49,40 @@ public class VehicleControllerTests {
     return mockMvc.perform(MockMvcRequestBuilders.get(uri + path)).andReturn().getResponse().getContentAsString();
   }
   
-  private void postMock(String body, int statusCode) throws Exception {
+  private TokenDto getToken(String username, String password) throws UnsupportedEncodingException, URISyntaxException, Exception {
+	String content = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
+	String token = mockMvc.perform(MockMvcRequestBuilders.post(new URI("/auth"))
+			.content(content)
+			.contentType(MediaType.APPLICATION_JSON))
+			.andReturn()
+			.getResponse()
+			.getContentAsString();
+	
+	if(token.isEmpty()) {
+		return new TokenDto("", "");
+	}
+	
+	return mapFromJson(token, TokenDto.class);
+  }
+  
+  private void postMock(String body, int statusCode, TokenDto token) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.post(uri)
         .content(body)
+        .header("Authorization", String.format("%s %s", token.getType(), token.getToken()))
         .contentType(MediaType.APPLICATION_JSON))
     .andExpect(MockMvcResultMatchers.status().is(statusCode));
   }
   
-  private void deleteMock(long id, int statusCode) throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.delete(uri + "/" + id))
+  private void deleteMock(long id, int statusCode, TokenDto token) throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.delete(uri + "/" + id)
+    	.header("Authorization", String.format("%s %s", token.getType(), token.getToken())))
     .andExpect(MockMvcResultMatchers.status().is(statusCode));
   }
 
-  private void putMock(long id, String body, int statusCode) throws Exception {
+  private void putMock(long id, String body, int statusCode, TokenDto token) throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.put(uri + "/" + id)
         .content(body)
+        .header("Authorization", String.format("%s %s", token.getType(), token.getToken()))
         .contentType(MediaType.APPLICATION_JSON))
     .andExpect(MockMvcResultMatchers.status().is(statusCode));
   }
@@ -203,7 +223,7 @@ public class VehicleControllerTests {
     double price = 60000;
     String body = String.format(Locale.US, "{ \"brandName\":\"%s\", \"model\":\"%s\", \"year\":%d, \"price\":%.2f }", brandName, model, year, price);
   
-    postMock(body, 201);
+    postMock(body, 201, getToken("teste", "123"));
   }
   
   @Test
@@ -218,7 +238,7 @@ public class VehicleControllerTests {
   public void shouldDeleteAVehicleById() throws Exception{
     Vehicle vehicleBefore = mapFromJson(getMock("/5"), Vehicle.class);
     
-    deleteMock(5l, 200);
+    deleteMock(5l, 200, getToken("teste", "123"));
     
     Vehicle vehicleAfter = mapFromJson(getMock("/5"), Vehicle.class);
     
@@ -230,11 +250,18 @@ public class VehicleControllerTests {
   @Order(14)
   public void shouldNotDeleteAnNonExistingVehicleById() throws Exception{
 
-    deleteMock(9999l, 404);
+    deleteMock(9999l, 404, getToken("teste", "123"));
   }
   
   @Test 
   @Order(15)
+  public void shouldNotDeleteAVehicleWithoutAuthentication() throws Exception{
+
+    deleteMock(1l, 403, getToken("teste", "1234"));
+  }
+  
+  @Test 
+  @Order(16)
   public void shouldEditAnExistingVehicle() throws Exception{
     Vehicle vehicleBefore = mapFromJson(getMock("/1"), Vehicle.class);
     Assert.assertNotEquals(60000.00, vehicleBefore.getPrice());
@@ -242,12 +269,24 @@ public class VehicleControllerTests {
     String body = String.format(Locale.US, "{ \"brandName\":\"%s\", \"model\":\"%s\", \"year\":%d, \"price\":%.2f }", 
         vehicleBefore.getBrand().getName(), vehicleBefore.getModel(), vehicleBefore.getYear(), 60000.00);
     
-    putMock(1l, body, 200);
+    putMock(1l, body, 200, getToken("teste", "123"));
     
     Vehicle vehicle = mapFromJson(getMock("/1"), Vehicle.class);
     Assert.assertEquals(60000, vehicle.getPrice(), 0.0);
   }
   
+  @Test
+  @Order(17)
+  public void shouldNotEditAnExistingVehicleWithoutAuthentication() throws Exception {
+	putMock(1l, "", 403, getToken("teste", "1234"));
+  }
+  
+  @Test 
+  @Order(18)
+  public void shouldNotInsertAVehicleWithoutAuthentication() throws Exception{
+
+    postMock("", 403, getToken("teste", "1234"));
+  }
   
 }
 
