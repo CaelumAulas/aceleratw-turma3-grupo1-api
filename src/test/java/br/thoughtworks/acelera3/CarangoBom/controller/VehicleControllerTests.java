@@ -7,10 +7,8 @@ import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,7 +31,7 @@ import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(OrderAnnotation.class)
+@Transactional
 public class VehicleControllerTests {
   
   @Autowired
@@ -96,7 +95,6 @@ public class VehicleControllerTests {
   }
 
   @Test
-  @Order(1)
   public void shouldReturnVehicleById() throws Exception {
     Vehicle vehicle = mapFromJson(getMock("/1"), Vehicle.class);
     Assert.assertEquals(new Long(1), vehicle.getId());
@@ -107,7 +105,6 @@ public class VehicleControllerTests {
   }
       
   @Test
-  @Order(2)
   public void shouldReturnVehicles() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?page=0&size=20"), VehicleListDto.class);
     Assert.assertEquals(4, vehicles.getContent().size());
@@ -119,7 +116,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(3)
   public void shouldReturnVehiclesByBrand() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?brand=Ford&page=0&size=10"), VehicleListDto.class);
     Assert.assertEquals(3, vehicles.getContent().size());
@@ -131,7 +127,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(4)
   public void shouldReturnVehiclesByModel() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?model=Uno&page=0&size=10"), VehicleListDto.class);
     Assert.assertEquals(1, vehicles.getContent().size());
@@ -143,7 +138,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(5)
   public void shouldReturnVehiclesByYearRange() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?minYear=2019&maxYear=2020&page=0&size=10"), VehicleListDto.class);
     Assert.assertEquals(1, vehicles.getContent().size());
@@ -155,7 +149,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(6)
   public void shouldReturnVehiclesByPriceRange() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?minPrice=20000.99&maxPrice=31000.99&page=0&size=10"), VehicleListDto.class);
     Assert.assertEquals(2, vehicles.getContent().size());
@@ -167,7 +160,6 @@ public class VehicleControllerTests {
   }
 
   @Test
-  @Order(7)
   public void shouldReturnAllVehiclesWithPaginationAndIsFirstPage() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?page=0&size=2"), VehicleListDto.class);
     Assert.assertEquals(2, vehicles.getContent().size());
@@ -179,7 +171,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(8)
   public void shouldReturnAllVehiclesWithPaginationAndIsSecondPage() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?page=1&size=2"), VehicleListDto.class);
     Assert.assertEquals(2, vehicles.getContent().size());
@@ -191,7 +182,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(9)
   public void shouldReturnVehiclesByModelAndBrand() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?model=Fusion&brand=Ford&page=0&size=10"), VehicleListDto.class);
     Assert.assertEquals(1, vehicles.getContent().size());
@@ -203,7 +193,6 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(10)
   public void shouldNotReturnVehiclesByWrongModelAndBrand() throws Exception {
     VehicleListDto vehicles = mapFromJson(getMock("?model=Fusion&brand=Fiat&page=0&size=10"), VehicleListDto.class);
     Assert.assertEquals(0, vehicles.getContent().size());
@@ -215,7 +204,6 @@ public class VehicleControllerTests {
   }
   
   @Test 
-  @Order(11)
   public void shouldCreateANewVehicle() throws Exception{
     String brandName = "Fiat";
     String model = "Toro";
@@ -227,41 +215,36 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(12) 
   public void shouldNotReturnVehicleByWrongId() throws Exception {
     Vehicle vehicle = mapFromJson(getMock("/9999"), Vehicle.class);
     Assert.assertNull(vehicle);
   }
   
   @Test 
-  @Order(13)
   public void shouldDeleteAVehicleById() throws Exception{
-    Vehicle vehicleBefore = mapFromJson(getMock("/5"), Vehicle.class);
+    Vehicle vehicleBefore = mapFromJson(getMock("/4"), Vehicle.class);
     
-    deleteMock(5l, 200, getToken("teste", "123"));
+    deleteMock(4l, 200, getToken("teste", "123"));
     
-    Vehicle vehicleAfter = mapFromJson(getMock("/5"), Vehicle.class);
+    Vehicle vehicleAfter = mapFromJson(getMock("/4"), Vehicle.class);
     
-    Assert.assertEquals(new Long(5), vehicleBefore.getId());
+    Assert.assertEquals(new Long(4), vehicleBefore.getId());
     Assert.assertNull(vehicleAfter);
   }
 
   @Test 
-  @Order(14)
   public void shouldNotDeleteAnNonExistingVehicleById() throws Exception{
 
     deleteMock(9999l, 404, getToken("teste", "123"));
   }
   
   @Test 
-  @Order(15)
   public void shouldNotDeleteAVehicleWithoutAuthentication() throws Exception{
 
     deleteMock(1l, 403, getToken("teste", "1234"));
   }
   
   @Test 
-  @Order(16)
   public void shouldEditAnExistingVehicle() throws Exception{
     Vehicle vehicleBefore = mapFromJson(getMock("/1"), Vehicle.class);
     Assert.assertNotEquals(60000.00, vehicleBefore.getPrice());
@@ -276,13 +259,11 @@ public class VehicleControllerTests {
   }
   
   @Test
-  @Order(17)
   public void shouldNotEditAnExistingVehicleWithoutAuthentication() throws Exception {
 	putMock(1l, "", 403, getToken("teste", "1234"));
   }
   
   @Test 
-  @Order(18)
   public void shouldNotInsertAVehicleWithoutAuthentication() throws Exception{
 
     postMock("", 403, getToken("teste", "1234"));
