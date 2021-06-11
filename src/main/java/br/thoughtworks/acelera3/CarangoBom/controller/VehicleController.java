@@ -1,6 +1,7 @@
 package br.thoughtworks.acelera3.CarangoBom.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,12 @@ public class VehicleController {
     return ResponseEntity.ok(new VehicleListDto(vehicles));
     
     
+  }
+  
+  @GetMapping("/all")
+  public List<Vehicle> getAllVehiclesWithoutPagination() {
+	  
+	  return vehicleRepository.findAll();
   }
   
   @PostMapping

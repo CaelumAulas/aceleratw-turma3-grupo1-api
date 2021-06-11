@@ -288,5 +288,12 @@ public class VehicleControllerTests {
     postMock("", 403, getToken("teste", "1234"));
   }
   
+  @Test
+  @Order(19)
+  public void shouldReturnVehiclesWithoutPagination() throws Exception {
+    Vehicle[] vehicles = mapFromJson(getMock("/all"), Vehicle[].class);
+    Assert.assertEquals(4, vehicles.length);
+  }
+  
 }
 
