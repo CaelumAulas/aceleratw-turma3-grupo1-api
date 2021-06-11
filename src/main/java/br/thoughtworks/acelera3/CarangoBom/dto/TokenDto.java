@@ -4,6 +4,13 @@ public class TokenDto {
 	private String type;
 	private String token;
 	
+	public TokenDto() { }
+	
+	public TokenDto(String type, String token) {
+		this.type = type;
+		this.token = token;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -16,11 +23,4 @@ public class TokenDto {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	
-	public TokenDto(String type, String token) {
-		this.type = type;
-		this.token = token;
-	}
-	
-	
 }
