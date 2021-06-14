@@ -1,30 +1,17 @@
 package br.thoughtworks.acelera3.CarangoBom.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.thoughtworks.acelera3.CarangoBom.dto.TokenDto;
 import br.thoughtworks.acelera3.CarangoBom.dto.VehicleListDto;
 import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 
@@ -32,66 +19,11 @@ import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class VehicleControllerTests {
-  
-  @Autowired
-  private MockMvc mockMvc;
-  
-  private static URI uri;
-  
-  @BeforeAll
-  private static void createUri() throws URISyntaxException {
-    uri = new URI("/vehicle");
-  }
-  
-  private String getMock(String path) throws UnsupportedEncodingException, Exception {
-    return mockMvc.perform(MockMvcRequestBuilders.get(uri + path)).andReturn().getResponse().getContentAsString();
-  }
-  
-  private TokenDto getToken(String username, String password) throws UnsupportedEncodingException, URISyntaxException, Exception {
-	String content = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
-	String token = mockMvc.perform(MockMvcRequestBuilders.post(new URI("/auth"))
-			.content(content)
-			.contentType(MediaType.APPLICATION_JSON))
-			.andReturn()
-			.getResponse()
-			.getContentAsString();
-	
-	if(token.isEmpty()) {
-		return new TokenDto("", "");
-	}
-	
-	return mapFromJson(token, TokenDto.class);
-  }
-  
-  private void postMock(String body, int statusCode, TokenDto token) throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.post(uri)
-        .content(body)
-        .header("Authorization", String.format("%s %s", token.getType(), token.getToken()))
-        .contentType(MediaType.APPLICATION_JSON))
-    .andExpect(MockMvcResultMatchers.status().is(statusCode));
-  }
-  
-  private void deleteMock(long id, int statusCode, TokenDto token) throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.delete(uri + "/" + id)
-    	.header("Authorization", String.format("%s %s", token.getType(), token.getToken())))
-    .andExpect(MockMvcResultMatchers.status().is(statusCode));
-  }
+public class VehicleControllerTests extends ControllerTests {
 
-  private void putMock(long id, String body, int statusCode, TokenDto token) throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.put(uri + "/" + id)
-        .content(body)
-        .header("Authorization", String.format("%s %s", token.getType(), token.getToken()))
-        .contentType(MediaType.APPLICATION_JSON))
-    .andExpect(MockMvcResultMatchers.status().is(statusCode));
-  }
-  
-  private <T> T mapFromJson(String json, Class<T> classType) throws JsonMappingException, JsonProcessingException {
-    if (json == null || json.trim().isEmpty()) {
-      return null;
-    }
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper.readValue(json, classType);
+  @BeforeAll
+  private static void createVehicleUri() throws URISyntaxException {
+    createUri("/vehicle");
   }
 
   @Test
@@ -211,7 +143,7 @@ public class VehicleControllerTests {
     double price = 60000;
     String body = String.format(Locale.US, "{ \"brandName\":\"%s\", \"model\":\"%s\", \"year\":%d, \"price\":%.2f }", brandName, model, year, price);
   
-    postMock(body, 201, getToken("teste", "123"));
+    postMockWithToken(body, 201, getToken("teste", "123"));
   }
   
   @Test
@@ -266,7 +198,7 @@ public class VehicleControllerTests {
   @Test 
   public void shouldNotInsertAVehicleWithoutAuthentication() throws Exception{
 
-    postMock("", 403, getToken("teste", "1234"));
+    postMockWithToken("", 403, getToken("teste", "1234"));
   }
   
 }

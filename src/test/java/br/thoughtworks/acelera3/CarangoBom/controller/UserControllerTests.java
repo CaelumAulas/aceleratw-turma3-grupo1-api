@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,9 +24,10 @@ public class UserControllerTests extends ControllerTests {
 	
 	@BeforeAll
 	private static void createUserUri() throws URISyntaxException {
-		createUri("user");
+		createUri("/user");
 	}
 	
+	@Test
 	public void shouldFindUserList() throws Exception {
 		UserListDto user = mapFromJson(getMock("?page=0&size=20"), UserListDto.class);
 		Assert.assertEquals(1, user.getContent().size());
