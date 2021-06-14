@@ -202,7 +202,6 @@ public class VehicleControllerTests extends ControllerTests {
   }
   
   @Test
-  @Order(19)
   public void shouldReturnVehiclesWithoutPagination() throws Exception {
     Vehicle[] vehicles = mapFromJson(getMock("/all"), Vehicle[].class);
     Assert.assertEquals(4, vehicles.length);

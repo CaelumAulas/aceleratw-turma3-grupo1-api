@@ -1,7 +1,6 @@
 package br.thoughtworks.acelera3.CarangoBom.controller;
 
 import java.net.URISyntaxException;
-import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.thoughtworks.acelera3.CarangoBom.dto.TokenDto;
 import br.thoughtworks.acelera3.CarangoBom.dto.UserListDto;
 import br.thoughtworks.acelera3.CarangoBom.models.User;
-import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
