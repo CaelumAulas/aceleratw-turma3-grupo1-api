@@ -1,7 +1,10 @@
 INSERT INTO USER(username, password) VALUES('teste', '$2a$10$Ijf4rM7Mor2U5zN9Zjz5qOofRq0Qy.MtWdRqtUp99TXTFYEnytOpO');
+INSERT INTO USER(username, password) VALUES('teste2', '$2a$10$Ijf4rM7Mor2U5zN9Zjz5qOofRq0Qy.MtWdRqtUp99TXTFYEnytOpO');
+
 INSERT INTO PROFILE(name) VALUES ('admin');
 
 INSERT INTO USER_PROFILES(user_id, profiles_id) VALUES (1,1);
+INSERT INTO USER_PROFILES(user_id, profiles_id) VALUES (2,1);
 
 INSERT INTO BRAND(name) VALUES ('Ford');
 INSERT INTO BRAND(name) VALUES ('Fiat');
