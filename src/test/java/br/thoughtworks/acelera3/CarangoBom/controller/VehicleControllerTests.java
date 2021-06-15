@@ -146,6 +146,30 @@ public class VehicleControllerTests extends ControllerTests {
     postMockWithToken(body, 201, getToken("teste", "123"));
   }
   
+  @Test 
+  public void shouldNotCreateANewVehicleWithEmptyRequiredFields() throws Exception{
+    String brandName = "";
+    String model = "";
+    int year = 0;
+    double price = 0;
+    String body = String.format(Locale.US, "{ \"brandName\":\"%s\", \"model\":\"%s\", \"year\":%d, \"price\":%.2f }", brandName, model, year, price);
+  
+    postMockWithToken(body, 400, getToken("teste", "123"));
+  }
+  
+  @Test 
+  public void shouldNotCreateANewVehicleWithNullRequiredFields() throws Exception{
+    postMockWithToken("{}", 400, getToken("teste", "123"));
+  }
+  
+  @Test 
+  public void shouldNotCreateANewVehicleWithMissingRequiredFields() throws Exception{
+    String model = "Toro";
+    String body = String.format(Locale.US, "{ \"model\":\"%s\" }", model);
+  
+    postMockWithToken(body, 400, getToken("teste", "123"));
+  }
+  
   @Test
   public void shouldNotReturnVehicleByWrongId() throws Exception {
     Vehicle vehicle = mapFromJson(getMock("/9999"), Vehicle.class);

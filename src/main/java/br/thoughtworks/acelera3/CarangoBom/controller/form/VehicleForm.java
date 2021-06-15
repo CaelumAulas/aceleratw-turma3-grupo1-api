@@ -2,15 +2,27 @@ package br.thoughtworks.acelera3.CarangoBom.controller.form;
 
 import java.util.Optional;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import br.thoughtworks.acelera3.CarangoBom.models.Brand;
 import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 import br.thoughtworks.acelera3.CarangoBom.repository.BrandRepository;
 
 public class VehicleForm {
 
+  @NotNull
+  @NotEmpty
   private String brandName;
+  
+  @NotNull
+  @NotEmpty
   private String model;
+  
+  @NotNull
   private int year;
+  
+  @NotNull
   private double price;
   
   

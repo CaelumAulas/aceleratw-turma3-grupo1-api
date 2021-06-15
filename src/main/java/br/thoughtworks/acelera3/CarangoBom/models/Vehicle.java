@@ -6,8 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Entity
 public class Vehicle {
@@ -16,21 +14,10 @@ public class Vehicle {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
-	@NotEmpty
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Brand brand;
-	
-	@NotNull
-	@NotEmpty
 	private String model;
-	
-	@NotNull
-	@NotEmpty
 	private int year;
-	
-	@NotNull
-	@NotEmpty
 	private double price;
 	
 	public Vehicle() { }
