@@ -2,13 +2,12 @@ package br.thoughtworks.acelera3.CarangoBom.dto;
 
 import org.springframework.data.domain.Page;
 
-import br.thoughtworks.acelera3.CarangoBom.models.Brand;
 import br.thoughtworks.acelera3.CarangoBom.models.Vehicle;
 
 public class VehicleDto {
 	
 	private Long id;
-	private Brand brand;
+	private BrandDto brand;
 	private String model;
 	private int year;
 	private double price;
@@ -17,7 +16,7 @@ public class VehicleDto {
 	
 	public VehicleDto(Vehicle input) {
 		this.id = input.getId();
-		this.brand = input.getBrand();
+		this.brand = new BrandDto(input.getBrand());
 		this.model = input.getModel();
 		this.year = input.getYear();
 		this.price = input.getPrice();
@@ -27,7 +26,7 @@ public class VehicleDto {
 		return id;
 	}
 
-	public Brand getBrand() {
+	public BrandDto getBrand() {
 		return brand;
 	}
 
