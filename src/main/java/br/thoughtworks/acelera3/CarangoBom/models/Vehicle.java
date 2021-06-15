@@ -18,7 +18,7 @@ public class Vehicle {
 	
 	@NotNull
 	@NotEmpty
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Brand brand;
 	
 	@NotNull
