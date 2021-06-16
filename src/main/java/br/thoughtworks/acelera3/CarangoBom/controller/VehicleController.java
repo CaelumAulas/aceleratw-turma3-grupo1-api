@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -110,7 +112,7 @@ public class VehicleController {
   }
   
   @PostMapping
-  public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleForm form, UriComponentsBuilder uriBuilder) {
+  public ResponseEntity<VehicleDto> createVehicle(@RequestBody @Valid VehicleForm form, UriComponentsBuilder uriBuilder) {
     Vehicle vehicle = form.toVehicle(brandRepository);
     vehicleRepository.save(vehicle);
     
@@ -123,15 +125,15 @@ public class VehicleController {
     
     Optional<Vehicle> vehicle = vehicleRepository.findById(id);
     if (vehicle.isPresent()) {
-      vehicleRepository.deleteById(id);
-      return ResponseEntity.ok().build();
+    	vehicleRepository.deleteById(id);
+    	return ResponseEntity.ok().build();
     }
     
     return ResponseEntity.notFound().build();
   }
   
   @PutMapping("/{id}")
-  public ResponseEntity<?> editVehicle(@PathVariable Long id, @RequestBody VehicleForm form) {
+  public ResponseEntity<?> editVehicle(@PathVariable Long id, @RequestBody @Valid VehicleForm form) {
     
     Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
     if (optionalVehicle.isPresent()) {

@@ -4,9 +4,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +23,6 @@ import br.thoughtworks.acelera3.CarangoBom.models.User;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@TestMethodOrder(OrderAnnotation.class)
 public class UserControllerTests extends ControllerTests {
 
 	@BeforeAll
