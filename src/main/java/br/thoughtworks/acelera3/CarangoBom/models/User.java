@@ -15,7 +15,7 @@ import javax.persistence.ManyToMany;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity
+@Entity(name="USERS")
 public class User implements UserDetails {
 	
 	private static final long serialVersionUID = 1L;
